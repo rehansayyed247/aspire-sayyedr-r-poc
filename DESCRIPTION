@@ -1,0 +1,15 @@
+Package: sayyedr
+Title: A Simple R Package for Testing and Deployment
+Version: 0.1.0
+Authors@R: 
+    person("Sayyedr", "Author", email = "author@example.com", role = c("aut", "cre"))
+Description: A simple R package that demonstrates testing and deployment to Artifactory.
+    Includes basic utilities for common operations.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
+Imports:
+    cli
+Suggests:
+    testthat (>= 3.0.0)

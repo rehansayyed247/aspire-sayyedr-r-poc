@@ -1,0 +1,45 @@
+name: R Package CICD to Artifactory
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up R
+      uses: r-lib/actions/setup-r@v2
+      with:
+        r-version: '4.2'
+    
+    - name: Install dependencies
+      run: |
+        install.packages(c("devtools", "roxygen2"))
+        devtools::install_deps(dependencies = TRUE)
+      shell: Rscript {0}
+    
+    - name: Check package
+      run: devtools::check()
+      shell: Rscript {0}
+    
+    - name: Build package
+      run: devtools::build()
+      shell: Rscript {0}
+    
+    - name: Deploy to Artifactory
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      env:
+        ARTIFACTORY_URL: ${{ secrets.ARTIFACTORY_URL }}
+        ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
+        ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        REPO_KEY: ${{ secrets.ARTIFACTORY_REPO_KEY }}
+      run: |
+        PKG_FILE=$(ls -t *.tar.gz | head -1)
+        curl -H "Authorization: Basic $(echo -n $ARTIFACTORY_USER:$ARTIFACTORY_PASSWORD | base64)" \
+          -T $PKG_FILE "$ARTIFACTORY_URL/$REPO_KEY/$PKG_FILE"
