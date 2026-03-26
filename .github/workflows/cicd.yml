@@ -39,6 +39,10 @@ jobs:
            roxygen2
         install-dependencies: true
     
+    - name: Generate documentation
+      run: devtools::document()
+      shell: Rscript {0}
+
     - name: Check package
       run: devtools::check()
       shell: Rscript {0}
