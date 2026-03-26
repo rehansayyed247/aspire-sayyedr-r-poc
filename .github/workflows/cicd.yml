@@ -20,7 +20,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        install.packages(c("devtools", "roxygen2"))
+        install.packages(c("devtools", "roxygen2"), dependencies = TRUE)
         devtools::install_deps(dependencies = TRUE)
       shell: Rscript {0}
     
